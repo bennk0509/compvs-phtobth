@@ -14,6 +14,21 @@ def apply_invisible_cloak(frame, background):
     mask = cv2.inRange(hsv, lower_green, upper_green)
 
 
+    # cv2.morphologyEx() performs morphological transformations on binary images (mask images).
+    # It’s a way to clean white regions (foreground) by eroding, dilating, or combining both.
+    # These operations are extremely useful after you create a mask with cv2.inRange() — they remove small noise, fill small holes, and smooth edges.
+    # cv2.morphologyEx(src, op, kernel[, dst[, anchor[, iterations[, borderType[, borderValue]]]]])
+    #PARAMETERS:
+        # src	        Input image (usually a binary mask)
+        # op	        The morphological operation you want to perform
+            # MORPH_OPEN        Tiny white dots (noise)	
+            # MORPH_CLOSE       Small black holes inside white region	
+            # MORPH_DILATE      Object edges look broken or jagged	
+            # MORPH_ERODE       Object edges too fat / overlapping
+            # MORPH_GRADIENT    Want to get only boundaries	
+        # kernel	    Structuring element (e.g. np.ones((5,5), np.uint8)) defining neighborhood size
+        # iterations	How many times to apply the operation (higher = stronger effect)
+
     # combine masks and refine if needed
     kernel = np.ones((5,5), np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, kernel)

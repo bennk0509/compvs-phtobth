@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import copy
 import os
 
-# Use img.copy() instead of import copy
 def show_side_by_side(original, edited, title="Comparison"):
     fig, axes = plt.subplots(1, 2, figsize=(10, 5))
     axes[0].imshow(cv2.cvtColor(original, cv2.COLOR_BGR2RGB))
@@ -77,9 +76,15 @@ def add_padding(img, pad_size, border_type, aspect_choice):
     return new_img, f"padded {pad_size}px ({border_type}, ratio {aspect_choice})"
 
 def apply_threshold(img, mode):
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    if len(img.shape) == 3 and img.shape[2] == 3:
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+    else:
+        gray = img.copy()
+    
     ttype = cv2.THRESH_BINARY if mode == 'binary' else cv2.THRESH_BINARY_INV
+    
     _, thresh = cv2.threshold(gray, 128, 255, ttype)
+    
     thresh_bgr = cv2.cvtColor(thresh, cv2.COLOR_GRAY2BGR)
     return thresh_bgr, f"threshold ({mode})"
 
